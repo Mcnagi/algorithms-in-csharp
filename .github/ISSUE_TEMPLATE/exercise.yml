@@ -1,0 +1,21 @@
+name: Exercise
+description: Track one exercise from LEARNING.md
+labels: [exercise]
+body:
+  - type: input
+    id: member
+    attributes:
+      label: What to implement
+      placeholder: Graph.DepthFirst
+    validations:
+      required: true
+  - type: input
+    id: target
+    attributes:
+      label: Complexity target
+      placeholder: O(V + E)
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Approach, edge cases, anything you got stuck on.
