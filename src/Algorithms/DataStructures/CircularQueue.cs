@@ -15,11 +15,13 @@ public sealed class CircularQueue<T>
     private T[] _q = new T[DefaultCapacity];
     private int _head = 0;
 
+    ///<summary>Return the number of elements. O(1).</summary>
     public int Count {get; private set;}
 
+    ///<summary>Whether the queue is empty. O(1).</summary>
     public bool IsEmpty => Count == 0;
 
-    /// <summary>Add to the back. Grow the buffer when full. O(1).</summary>
+    /// <summary>Add to the back. Grow the buffer when full. Amortised O(1).</summary>
     public void Enqueue(T item) 
     {
         EnsureCapacity(Count + 1);
@@ -48,7 +50,7 @@ public sealed class CircularQueue<T>
 
     private void ThrowIfEmpty()
     {
-        if (IsEmpty) throw new InvalidOperationException("Stack is empty.");
+        if (IsEmpty) throw new InvalidOperationException("Queue is empty.");
     }
 
     private void EnsureCapacity(int needed)
