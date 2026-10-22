@@ -10,16 +10,57 @@ namespace Algorithms.DataStructures;
 /// </summary>
 public sealed class CircularQueue<T>
 {
-    public int Count => throw new NotImplementedException("Exercise: see LEARNING.md");
+    private const int DefaultCapacity = 8;
+    private const int GrowthFactor = 2;
+    private T[] _q = new T[DefaultCapacity];
+    private int _head = 0;
+
+    public int Count {get; private set;}
 
     public bool IsEmpty => Count == 0;
 
-    /// <summary>Add to the back. Grow the buffer when full.</summary>
-    public void Enqueue(T item) => throw new NotImplementedException("Exercise: see LEARNING.md");
+    /// <summary>Add to the back. Grow the buffer when full. O(1).</summary>
+    public void Enqueue(T item) 
+    {
+        EnsureCapacity(Count + 1);
+        int index = (_head + Count) % _q.Length; 
+        _q[index] = item;
+        Count++;
+    }
 
-    /// <summary>Remove and return the front item. Throw <see cref="InvalidOperationException"/> when empty.</summary>
-    public T Dequeue() => throw new NotImplementedException("Exercise: see LEARNING.md");
+    /// <summary>Remove and return the front item. Throw <see cref="InvalidOperationException"/> when empty. O(1).</summary>
+    public T Dequeue()
+    {
+        ThrowIfEmpty();
+        T item = _q[_head];
+        _q[_head] = default!;
+        _head = (_head + 1) % _q.Length;
+        Count --;
+        return item;
+    }
 
-    /// <summary>Return the front item without removing it. Throw <see cref="InvalidOperationException"/> when empty.</summary>
-    public T Peek() => throw new NotImplementedException("Exercise: see LEARNING.md");
+    /// <summary>Return the front item without removing it. Throw <see cref="InvalidOperationException"/> when empty. O(1).</summary>
+    public T Peek()
+    {
+        ThrowIfEmpty();
+        return _q[_head];
+    }
+
+    private void ThrowIfEmpty()
+    {
+        if (IsEmpty) throw new InvalidOperationException("Stack is empty.");
+    }
+
+    private void EnsureCapacity(int needed)
+    {
+        if (needed <= _q.Length) return;
+        int newCapacity = Math.Max(needed, _q.Length * GrowthFactor);
+        T[] newQ = new T[newCapacity];
+        for (int i = 0; i < Count; i ++) 
+        {
+            newQ[i] = _q[(_head + i) % _q.Length];
+        }
+        _q = newQ;
+        _head = 0;
+    }
 }
