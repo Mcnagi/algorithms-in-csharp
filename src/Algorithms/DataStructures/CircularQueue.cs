@@ -16,7 +16,7 @@ public sealed class CircularQueue<T>
     private int _head = 0;
 
     ///<summary>Return the number of elements. O(1).</summary>
-    public int Count {get; private set;}
+    public int Count { get; private set; }
 
     ///<summary>Whether the queue is empty. O(1).</summary>
     public bool IsEmpty => Count == 0;
@@ -37,7 +37,7 @@ public sealed class CircularQueue<T>
         T item = _q[_head];
         _q[_head] = default!;
         _head = (_head + 1) % _q.Length;
-        Count --;
+        Count--;
         return item;
     }
 
@@ -56,9 +56,8 @@ public sealed class CircularQueue<T>
     private void EnsureCapacity(int needed)
     {
         if (needed <= _q.Length) return;
-        int newCapacity = Math.Max(needed, _q.Length * GrowthFactor);
-        T[] newQ = new T[newCapacity];
-        for (int i = 0; i < Count; i ++) 
+        T[] newQ = new T[_q.Length * GrowthFactor];
+        for (int i = 0; i < Count; i++) 
         {
             newQ[i] = _q[(_head + i) % _q.Length];
         }
