@@ -4,7 +4,7 @@ namespace Algorithms.Tests.DataStructures;
 
 public class ArrayStackTests
 {
-    [Fact(Skip = Exercise.Todo)]
+    [Fact()]
     public void Pop_ReturnsItemsInReverseOrder()
     {
         var stack = new ArrayStack<int>();
@@ -15,7 +15,7 @@ public class ArrayStackTests
         Assert.Equal(1, stack.Count);
     }
 
-    [Fact(Skip = Exercise.Todo)]
+    [Fact()]
     public void Peek_DoesNotRemove()
     {
         var stack = new ArrayStack<string>();
@@ -25,7 +25,7 @@ public class ArrayStackTests
         Assert.Equal(1, stack.Count);
     }
 
-    [Fact(Skip = Exercise.Todo)]
+    [Fact()]
     public void PopAndPeek_WhenEmpty_Throw()
     {
         var stack = new ArrayStack<int>();
@@ -35,7 +35,7 @@ public class ArrayStackTests
         Assert.Throws<InvalidOperationException>(() => stack.Peek());
     }
 
-    [Fact(Skip = Exercise.Todo)]
+    [Fact()]
     public void Push_ManyItems_Grows()
     {
         var stack = new ArrayStack<int>();
