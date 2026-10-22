@@ -1,10 +1,8 @@
 namespace Algorithms.DataStructures;
 
 /// <summary>
-/// EXERCISE — a last-in, first-out stack backed by an array.
-/// Every member below is O(1) (Push amortised). Model it on <see cref="DynamicArray{T}"/>:
-/// a <c>T[]</c> field, a count, and doubling when full.
-/// Tests: ArrayStackTests
+/// A last-in, first-out stack backed by an array that doubles when full.
+/// Every member is O(1); <see cref="Push"/> is amortised O(1).
 /// </summary>
 public sealed class ArrayStack<T>
 {
@@ -20,12 +18,16 @@ public sealed class ArrayStack<T>
         this.capacity = INITIAL_SIZE;
     }
     
-    /// <summary>Number of items on the stack.</summary>
+    /// <summary>Number of items on the stack. O(1).</summary>
     public int Count => this.size;
 
+    /// <summary>Whether the stack has no items. O(1).</summary>
     public bool IsEmpty => Count == 0;
 
-    /// <summary>Add to the top. Grow the array when full.</summary>
+    /// <summary>
+    /// Add <paramref name="item"/> to the top. Amortised O(1): the array doubles
+    /// when full, so each item is copied at most a constant number of times on average.
+    /// </summary>
     public void Push(T item) {
         if (this.size == this.capacity) {
             this.capacity *= SIZE_MULTIPLIER;
@@ -36,7 +38,8 @@ public sealed class ArrayStack<T>
         this.stack[this.size ++] = item; 
     }
 
-    /// <summary>Remove and return the top item. Throw <see cref="InvalidOperationException"/> when empty.</summary>
+    /// <summary>Remove and return the top item. O(1).</summary>
+    /// <exception cref="InvalidOperationException">The stack is empty.</exception>
     public T Pop() {
         if (this.size <= 0) throw new InvalidOperationException();
         
@@ -45,7 +48,8 @@ public sealed class ArrayStack<T>
         return tmp;
     }
 
-    /// <summary>Return the top item without removing it. Throw <see cref="InvalidOperationException"/> when empty.</summary>
+    /// <summary>Return the top item without removing it. O(1).</summary>
+    /// <exception cref="InvalidOperationException">The stack is empty.</exception>
     public T Peek() {
         if (this.size <=0 ) throw new InvalidOperationException();
         return this.stack[size - 1]!;
