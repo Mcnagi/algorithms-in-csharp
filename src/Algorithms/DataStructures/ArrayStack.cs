@@ -30,7 +30,7 @@ public sealed class ArrayStack<T>
     public void Push(T item) {
         if (this.size == this.stack.Length) {
             T[] tmp = new T[this.stack.Length * SIZE_MULTIPLIER];
-            for (int i = 0; i < this.size; i ++) tmp[i] = this.stack[i];
+            Array.Copy(this.stack, tmp, this.size);
             this.stack = tmp;
         }
         this.stack[this.size ++] = item; 
