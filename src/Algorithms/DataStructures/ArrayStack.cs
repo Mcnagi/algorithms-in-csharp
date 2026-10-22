@@ -6,14 +6,14 @@ namespace Algorithms.DataStructures;
 /// </summary>
 public sealed class ArrayStack<T>
 {
-    private T?[] stack;
+    private T[] stack;
     private int size;
     private const int SIZE_MULTIPLIER = 2;
     private const int INITIAL_SIZE = 8;
 
 
     public ArrayStack() {
-        this.stack = new T?[INITIAL_SIZE];
+        this.stack = new T[INITIAL_SIZE];
         this.size = 0;
     }
     
@@ -29,7 +29,7 @@ public sealed class ArrayStack<T>
     /// </summary>
     public void Push(T item) {
         if (this.size == this.stack.Length) {
-            T?[] tmp = new T?[this.stack.Length * SIZE_MULTIPLIER];
+            T[] tmp = new T[this.stack.Length * SIZE_MULTIPLIER];
             for (int i = 0; i < this.size; i ++) tmp[i] = this.stack[i];
             this.stack = tmp;
         }
@@ -41,8 +41,8 @@ public sealed class ArrayStack<T>
     public T Pop() {
         if (this.size <= 0) throw new InvalidOperationException();
         
-        T tmp = this.stack[--this.size]!;
-        this.stack[this.size] = default;
+        T tmp = this.stack[--this.size];
+        this.stack[this.size] = default!;
         return tmp;
     }
 
@@ -50,7 +50,7 @@ public sealed class ArrayStack<T>
     /// <exception cref="InvalidOperationException">The stack is empty.</exception>
     public T Peek() {
         if (this.size <=0 ) throw new InvalidOperationException();
-        return this.stack[size - 1]!;
+        return this.stack[size - 1];
     }
     
 }
