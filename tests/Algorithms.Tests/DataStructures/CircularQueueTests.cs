@@ -4,7 +4,7 @@ namespace Algorithms.Tests.DataStructures;
 
 public class CircularQueueTests
 {
-    [Fact(Skip = Exercise.Todo)]
+    [Fact()]
     public void Dequeue_ReturnsItemsInArrivalOrder()
     {
         var queue = new CircularQueue<int>();
@@ -15,7 +15,7 @@ public class CircularQueueTests
         Assert.Equal(2, queue.Count);
     }
 
-    [Fact(Skip = Exercise.Todo)]
+    [Fact()]
     public void DequeueAndPeek_WhenEmpty_Throw()
     {
         var queue = new CircularQueue<int>();
@@ -25,7 +25,7 @@ public class CircularQueueTests
         Assert.Throws<InvalidOperationException>(() => queue.Peek());
     }
 
-    [Fact(Skip = Exercise.Todo)]
+    [Fact()]
     public void InterleavedOperations_WrapAroundAndGrow_InOrder()
     {
         // Mixing enqueues and dequeues makes the head move, so the buffer wraps
