@@ -6,17 +6,11 @@ namespace Algorithms.DataStructures;
 /// </summary>
 public sealed class ArrayStack<T>
 {
-    private T[] _stack;
-    private int _size;
     private const int GrowthFactor = 2;
-    private const int InitialSize = 8;
+    private const int DefaultCapacity = 8;
+    private T[] _stack = new T[DefaultCapacity];
+    private int _size = 0;
 
-
-    public ArrayStack() {
-        _stack = new T[InitialSize];
-        _size = 0;
-    }
-    
     /// <summary>Number of items on the stack. O(1).</summary>
     public int Count => _size;
 
@@ -27,30 +21,38 @@ public sealed class ArrayStack<T>
     /// Add <paramref name="item"/> to the top. Amortised O(1): the array doubles
     /// when full, so each item is copied at most a constant number of times on average.
     /// </summary>
-    public void Push(T item) {
-        if (_size == _stack.Length) {
+    public void Push(T item) 
+    {
+        if (_size == _stack.Length)
+        {
             T[] tmp = new T[_stack.Length * GrowthFactor];
             Array.Copy(_stack, tmp, _size);
             _stack = tmp;
         }
-        _stack[_size ++] = item; 
+        _stack[_size++] = item;
     }
 
     /// <summary>Remove and return the top item. O(1).</summary>
     /// <exception cref="InvalidOperationException">The stack is empty.</exception>
-    public T Pop() {
-        if (_size <= 0) throw new InvalidOperationException();
-        
-        T tmp = _stack[--_size];
+    public T Pop()
+    {
+        if (IsEmpty) ThrowIfEmpty();
+        T item = _stack[--_size];
         _stack[_size] = default!;
-        return tmp;
+        return item;
     }
 
     /// <summary>Return the top item without removing it. O(1).</summary>
     /// <exception cref="InvalidOperationException">The stack is empty.</exception>
-    public T Peek() {
-        if (_size <=0 ) throw new InvalidOperationException();
+    public T Peek()
+    {
+        if (IsEmpty) ThrowIfEmpty();
         return _stack[_size - 1];
+    }
+
+    private void ThrowIfEmpty()
+    {
+        if (IsEmpty) throw new InvalidOperationException("Stack is empty.");
     }
     
 }
