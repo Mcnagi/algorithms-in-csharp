@@ -100,16 +100,13 @@ public sealed class BinarySearchTree<T> where T : IComparable<T>
     }
 
     /// <summary>
-    /// EXERCISE — remove a value; return false if it wasn't there. Three cases:
-    /// (1) leaf: unlink it; (2) one child: replace the node with its child;
-    /// (3) two children: copy the in-order successor (smallest value in the right subtree)
-    /// into the node, then remove the successor from the right subtree. Remember <c>Count</c>.
-    /// Tests: BinarySearchTreeTests.Remove_*
+    /// Remove a value; return false if it wasn't there. O(log(n)).
     /// </summary>
     public bool Remove(T value)
     {    
         Node? node = _root;
         Node? parent = null;
+        // O(log(n)) to find the node.
         while(node is not null)
         {
             int comp = value.CompareTo(node.Value);
@@ -124,6 +121,7 @@ public sealed class BinarySearchTree<T> where T : IComparable<T>
         }
         return false;
 
+        // O(log(n)) to find replacement node and O(1) to replace.
         void RemoveNode()
         {
             Node? newNode = null;
