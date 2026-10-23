@@ -85,9 +85,7 @@ public sealed class BinarySearchTree<T> where T : IComparable<T>
     }
 
     /// <summary>
-    /// EXERCISE — number of nodes on the longest root-to-leaf path. Empty tree = 0, one node = 1.
-    /// Hint: a two-line recursion, the same shape as <see cref="InOrder"/>.
-    /// Tests: BinarySearchTreeTests.Height_*
+    /// Number of nodes on the longest root-to-leaf path. Empty tree = 0, one node = 1.
     /// </summary>
     public int Height()
     {
@@ -106,7 +104,7 @@ public sealed class BinarySearchTree<T> where T : IComparable<T>
     {    
         Node? node = _root;
         Node? parent = null;
-        // O(log(n)) to find the node.
+        // O(log(h)) to find the node.
         while(node is not null)
         {
             int comp = value.CompareTo(node.Value);
@@ -121,7 +119,7 @@ public sealed class BinarySearchTree<T> where T : IComparable<T>
         }
         return false;
 
-        // O(log(n)) to find replacement node and O(1) to replace.
+        // O(log(nh)) to find replacement node and O(1) to replace.
         void RemoveNode()
         {
             Node? newNode = null;
