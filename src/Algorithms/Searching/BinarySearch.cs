@@ -22,11 +22,10 @@ public static class BinarySearch
     }
 
     /// <summary>
-    /// EXERCISE — the first index whose value is &gt;= <paramref name="target"/>
+    /// The first index whose value is &gt;= <paramref name="target"/>
     /// (equal to the count if every value is smaller). O(log n).
     /// With duplicates this finds the FIRST occurrence, which <see cref="IndexOf{T}"/> doesn't promise.
-    /// Hint: same loop as IndexOf, but never return early.
-    /// Tests: BinarySearchTests.LowerBound_*
+    /// O(log(n)).
     /// </summary>
     public static int LowerBound<T>(IReadOnlyList<T> sorted, T target) where T : IComparable<T>
     {
