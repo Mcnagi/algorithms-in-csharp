@@ -106,5 +106,56 @@ public sealed class BinarySearchTree<T> where T : IComparable<T>
     /// into the node, then remove the successor from the right subtree. Remember <c>Count</c>.
     /// Tests: BinarySearchTreeTests.Remove_*
     /// </summary>
-    public bool Remove(T value) => throw new NotImplementedException("Exercise: see LEARNING.md");
+    public bool Remove(T value)
+    {    
+        Node? node = _root;
+        Node? parent = null;
+        while(node is not null)
+        {
+            int comp = value.CompareTo(node.Value);
+            if (comp == 0) 
+            {
+                RemoveNode();
+                Count--;
+                return true;
+            }
+            parent = node;
+            node = comp < 0 ? node.Left : node.Right;
+        }
+        return false;
+
+        void RemoveNode()
+        {
+            Node? newNode = null;
+            if (node.Left is not null)
+            {
+                if (node.Right is not null)
+                {
+                    newNode = node.Right;
+                    Node? prev = null;
+                    
+                    // Traverse down to the samllest leaf of right child.
+                    // Replace smallest leaf with its left child if any.
+                    // Put smallest leaf in position of current node.
+                    while (newNode.Left is not null) 
+                    {
+                        prev = newNode;
+                        newNode = newNode.Left;
+                    }
+                    if (prev is not null)
+                    {
+                        prev.Left = newNode.Right;
+                    }
+                    newNode.Left = node.Left;
+                    if (newNode != node.Right) newNode.Right = node.Right;
+                }
+                else newNode = node.Left;
+            }
+            else if (node.Right is not null) newNode = node.Right;
+            
+            if (parent is null) _root = newNode;
+            else if (node.Value.CompareTo(parent.Value) < 0) parent.Left = newNode;
+            else parent.Right = newNode;
+        }
+    }
 }
