@@ -24,7 +24,7 @@ public class BinarySearchTests
         Assert.Equal(-1, BinarySearch.IndexOf(Array.Empty<int>(), 1));
     }
 
-    [Theory(Skip = Exercise.Todo)]
+    [Theory()]
     [InlineData(2, 1)]  // first of three 2s
     [InlineData(3, 4)]  // not present: where it would be inserted
     [InlineData(0, 0)]
@@ -35,7 +35,7 @@ public class BinarySearchTests
         Assert.Equal(expected, BinarySearch.LowerBound(withDuplicates, target));
     }
 
-    [Fact(Skip = Exercise.Todo)]
+    [Fact()]
     public void LowerBound_Empty_ReturnsZero()
     {
         Assert.Equal(0, BinarySearch.LowerBound(Array.Empty<int>(), 1));
