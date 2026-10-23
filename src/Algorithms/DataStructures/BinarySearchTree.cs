@@ -89,14 +89,71 @@ public sealed class BinarySearchTree<T> where T : IComparable<T>
     /// Hint: a two-line recursion, the same shape as <see cref="InOrder"/>.
     /// Tests: BinarySearchTreeTests.Height_*
     /// </summary>
-    public int Height() => throw new NotImplementedException("Exercise: see LEARNING.md");
+    public int Height()
+    {
+        return helper(_root);
+        int helper(Node? node)
+        {
+            if (node is null) return 0;
+            return Math.Max(helper(node.Left) + 1, helper(node.Right) + 1);
+        }
+    }
 
     /// <summary>
-    /// EXERCISE — remove a value; return false if it wasn't there. Three cases:
-    /// (1) leaf: unlink it; (2) one child: replace the node with its child;
-    /// (3) two children: copy the in-order successor (smallest value in the right subtree)
-    /// into the node, then remove the successor from the right subtree. Remember <c>Count</c>.
-    /// Tests: BinarySearchTreeTests.Remove_*
+    /// Remove a value; return false if it wasn't there. O(log(n)).
     /// </summary>
-    public bool Remove(T value) => throw new NotImplementedException("Exercise: see LEARNING.md");
+    public bool Remove(T value)
+    {    
+        Node? node = _root;
+        Node? parent = null;
+        // O(log(n)) to find the node.
+        while(node is not null)
+        {
+            int comp = value.CompareTo(node.Value);
+            if (comp == 0) 
+            {
+                RemoveNode();
+                Count--;
+                return true;
+            }
+            parent = node;
+            node = comp < 0 ? node.Left : node.Right;
+        }
+        return false;
+
+        // O(log(n)) to find replacement node and O(1) to replace.
+        void RemoveNode()
+        {
+            Node? newNode = null;
+            if (node.Left is not null)
+            {
+                if (node.Right is not null)
+                {
+                    newNode = node.Right;
+                    Node? prev = null;
+                    
+                    // Traverse down to the samllest leaf of right child.
+                    // Replace smallest leaf with its left child if any.
+                    // Put smallest leaf in position of current node.
+                    while (newNode.Left is not null) 
+                    {
+                        prev = newNode;
+                        newNode = newNode.Left;
+                    }
+                    if (prev is not null)
+                    {
+                        prev.Left = newNode.Right;
+                    }
+                    newNode.Left = node.Left;
+                    if (newNode != node.Right) newNode.Right = node.Right;
+                }
+                else newNode = node.Left;
+            }
+            else if (node.Right is not null) newNode = node.Right;
+            
+            if (parent is null) _root = newNode;
+            else if (node.Value.CompareTo(parent.Value) < 0) parent.Left = newNode;
+            else parent.Right = newNode;
+        }
+    }
 }
