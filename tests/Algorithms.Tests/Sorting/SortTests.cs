@@ -38,7 +38,7 @@ public class SortTests
         AssertSortsLikeArraySort(Sorts.InsertionSort, input);
     }
 
-    [Theory(Skip = Exercise.Todo)]
+    [Theory()]
     [MemberData(nameof(Cases))]
     public void MergeSort_Sorts(string name, int[] input)
     {
@@ -46,7 +46,7 @@ public class SortTests
         AssertSortsLikeArraySort(Sorts.MergeSort, input);
     }
 
-    [Fact(Skip = Exercise.Todo)]
+    [Fact()]
     public void MergeSort_IsStable()
     {
         // Equal keys must keep their original relative order.
@@ -57,7 +57,7 @@ public class SortTests
         Assert.Equal("bdac", string.Concat(items.Select(c => c.Tag)));
     }
 
-    [Theory(Skip = Exercise.Todo)]
+    [Theory()]
     [MemberData(nameof(Cases))]
     public void QuickSort_Sorts(string name, int[] input)
     {
