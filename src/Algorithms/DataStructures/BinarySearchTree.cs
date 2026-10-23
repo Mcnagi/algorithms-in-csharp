@@ -89,7 +89,15 @@ public sealed class BinarySearchTree<T> where T : IComparable<T>
     /// Hint: a two-line recursion, the same shape as <see cref="InOrder"/>.
     /// Tests: BinarySearchTreeTests.Height_*
     /// </summary>
-    public int Height() => throw new NotImplementedException("Exercise: see LEARNING.md");
+    public int Height()
+    {
+        return helper(_root);
+        int helper(Node? node)
+        {
+            if (node is null) return 0;
+            return Math.Max(helper(node.Left) + 1, helper(node.Right) + 1);
+        }
+    }
 
     /// <summary>
     /// EXERCISE — remove a value; return false if it wasn't there. Three cases:
