@@ -29,8 +29,51 @@ public static class Sorts
     /// rather than allocating in every merge. Use &lt;= when comparing so equal items keep order.
     /// Tests: SortTests (MergeSort cases)
     /// </summary>
-    public static void MergeSort<T>(T[] items) where T : IComparable<T> =>
-        throw new NotImplementedException("Exercise: see LEARNING.md");
+    public static void MergeSort<T>(T[] items) where T : IComparable<T>
+    {
+        T[] sorted = new T[items.Length];
+        sort(0, items.Length - 1);
+        return;
+
+        void sort(int left, int right)
+        {
+            if (left >= right) return;
+            if (left == right - 1)
+            {
+                if (items[left].CompareTo(items[right]) > 0)
+                {
+                    T itemLeft = items[left];
+                    items[left] = items[right];
+                    items[right] = itemLeft;
+                }
+            }
+            else
+            {
+                // divide into two lists
+                int mid = left + (right - left) / 2;
+                sort(left, mid);
+                sort(mid + 1, right);
+                merge(left, mid, right);
+            }
+        }
+
+        void merge(int lo, int mid, int hi)
+        {
+            int i = lo, j = mid + 1, k = lo;
+            while (i <= mid || j <= hi)
+            {
+                if (i > mid) sorted[k++] = items[j++];
+                else if (j > hi) sorted[k++] = items[i++];
+                else
+                {
+                    int comp = items[i].CompareTo(items[j]);
+                    if (comp <= 0) sorted[k++] = items[i++];
+                    else sorted[k++] = items[j++];
+                }
+            }
+            Array.Copy(sorted, lo, items, lo, hi - lo + 1);
+        }
+    }
 
     /// <summary>
     /// EXERCISE — quicksort. O(n log n) on average, O(n²) worst case, not stable, O(log n) stack.
