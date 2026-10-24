@@ -24,10 +24,7 @@ public static class Sorts
     }
 
     /// <summary>
-    /// EXERCISE — merge sort. O(n log n) always, stable, O(n) extra space.
-    /// Hint: allocate one temp buffer up front and pass it down the recursion
-    /// rather than allocating in every merge. Use &lt;= when comparing so equal items keep order.
-    /// Tests: SortTests (MergeSort cases)
+    /// Merge sort. O(n log n) always, stable, O(n) extra space.
     /// </summary>
     public static void MergeSort<T>(T[] items) where T : IComparable<T>
     {
@@ -76,10 +73,8 @@ public static class Sorts
     }
 
     /// <summary>
-    /// EXERCISE — quicksort. O(n log n) on average, O(n²) worst case, not stable, O(log n) stack.
-    /// Hint: start with the Lomuto partition (last item as pivot). Then try a random or
-    /// median-of-three pivot and see the AlreadySorted test case get much faster.
-    /// Tests: SortTests (QuickSort cases)
+    /// Quicksort. O(n log n) on average, O(n²) worst case, not stable, O(log n) stack.
+    /// Used Lomuto partition (last item as pivot). 
     /// </summary>
     public static void QuickSort<T>(T[] items) where T : IComparable<T>
     {
