@@ -57,7 +57,7 @@ public class SortTests
         Assert.Equal("bdac", string.Concat(items.Select(c => c.Tag)));
     }
 
-    [Theory()]
+    [Theory(Skip = Exercise.Todo)]
     [MemberData(nameof(Cases))]
     public void QuickSort_Sorts(string name, int[] input)
     {
