@@ -81,6 +81,32 @@ public static class Sorts
     /// median-of-three pivot and see the AlreadySorted test case get much faster.
     /// Tests: SortTests (QuickSort cases)
     /// </summary>
-    public static void QuickSort<T>(T[] items) where T : IComparable<T> =>
-        throw new NotImplementedException("Exercise: see LEARNING.md");
+    public static void QuickSort<T>(T[] items) where T : IComparable<T>
+    {
+        sortLomuto(0, items.Length);
+        
+        void sortLomuto(int from, int to)
+        {
+            // Do nothing when only one item.
+            if (from + 1 >= to) return;
+            
+            T pivot = items[to - 1];
+            int j = from;
+            for (int i = from; i < to - 1; i++)
+            {
+                if (items[i].CompareTo(pivot) <= 0)
+                    swap(i, j++);
+            }
+            swap(to - 1, j);
+            sortLomuto(from, j);
+            sortLomuto(j + 1, to);
+        }
+
+        void swap(int a, int b)
+        {
+            T itemA = items[a];
+            items[a] = items[b];
+            items[b] = itemA;
+        }
+    }
 }
