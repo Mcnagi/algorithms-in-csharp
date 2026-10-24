@@ -4,7 +4,7 @@ namespace Algorithms.Tests.DataStructures;
 
 public class MinHeapTests
 {
-    [Fact(Skip = Exercise.Todo)]
+    [Fact()]
     public void Pop_ReturnsItemsSmallestFirst()
     {
         var random = new Random(1234);
@@ -18,7 +18,7 @@ public class MinHeapTests
         Assert.Equal(values.Order(), popped);
     }
 
-    [Fact(Skip = Exercise.Todo)]
+    [Fact()]
     public void Peek_ReturnsMinimumWithoutRemoving()
     {
         var heap = new MinHeap<int>();
@@ -28,7 +28,7 @@ public class MinHeapTests
         Assert.Equal(3, heap.Count);
     }
 
-    [Fact(Skip = Exercise.Todo)]
+    [Fact()]
     public void PopAndPeek_WhenEmpty_Throw()
     {
         var heap = new MinHeap<int>();
