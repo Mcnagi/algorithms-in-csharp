@@ -39,20 +39,20 @@ public class GraphTests
     public void AddEdge_UnknownVertex_Throws() =>
         Assert.Throws<ArgumentOutOfRangeException>(() => SampleGraph().AddEdge(0, 6));
 
-    [Fact(Skip = Exercise.Todo)]
+    [Fact()]
     public void DepthFirst_GoesDeepBeforeWide()
     {
         // 0 → 1 → 3 (dead end) → back to 1 → 4 → 2
         Assert.Equal(new[] { 0, 1, 3, 4, 2 }, SampleGraph().DepthFirst(0));
     }
 
-    [Fact(Skip = Exercise.Todo)]
+    [Fact()]
     public void DepthFirst_DisconnectedVertex_VisitsOnlyItself()
     {
         Assert.Equal(new[] { 5 }, SampleGraph().DepthFirst(5));
     }
 
-    [Fact(Skip = Exercise.Todo)]
+    [Fact()]
     public void DepthFirst_HandlesCyclesAndLongChains()
     {
         var g = new Graph(5_000);
