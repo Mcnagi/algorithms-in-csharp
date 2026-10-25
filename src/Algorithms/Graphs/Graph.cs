@@ -66,6 +66,11 @@ public sealed class Graph
     /// </summary>
     public IReadOnlyList<int> DepthFirst(int start)
     {
+        return DepthFirstWithStack(start);
+    }
+
+    private IReadOnlyList<int> DepthFirstWithRecursive(int start)
+    {
         CheckVertex(start);
         var order = new List<int>();
         var visited = new bool[VertexCount];
@@ -79,6 +84,28 @@ public sealed class Graph
             {
                 if (visited[n]) continue;
                 Visit(n);
+            }
+        }
+        return order;
+    }
+
+    private IReadOnlyList<int> DepthFirstWithStack(int start)
+    {
+        List<int> order = new List<int>();
+        Stack<int> s = new Stack<int>();
+        bool[] visited = new bool[_adjacency.Length];
+        s.Push(start);
+        visited[start] = true;
+        while(s.Count > 0)
+        {
+            int current = s.Pop();
+            order.Add(current);
+            for (int i = _adjacency[current].Count - 1; i >= 0; i--)
+            {
+                int n = _adjacency[current][i];
+                if (visited[n]) continue;
+                visited[n] = true;
+                s.Push(n);
             }
         }
         return order;
