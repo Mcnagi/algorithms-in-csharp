@@ -62,7 +62,7 @@ public class GraphTests
         Assert.Equal(Enumerable.Range(0, 5_000), g.DepthFirst(0));
     }
 
-    [Theory(Skip = Exercise.Todo)]
+    [Theory()]
     [InlineData(0, 0, 0)]
     [InlineData(0, 1, 1)]
     [InlineData(0, 3, 2)]
