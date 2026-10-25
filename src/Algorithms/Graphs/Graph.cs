@@ -64,7 +64,25 @@ public sealed class Graph
     /// Stretch goal: rewrite it with an explicit <see cref="Stack{T}"/> and keep the same order.
     /// Tests: GraphTests.DepthFirst_*
     /// </summary>
-    public IReadOnlyList<int> DepthFirst(int start) => throw new NotImplementedException("Exercise: see LEARNING.md");
+    public IReadOnlyList<int> DepthFirst(int start)
+    {
+        CheckVertex(start);
+        var order = new List<int>();
+        var visited = new bool[VertexCount];
+        Visit(start);
+        
+        void Visit(int current)
+        {
+            order.Add(current);
+            visited[current] = true;
+            foreach (var n in _adjacency[current])
+            {
+                if (visited[n]) continue;
+                Visit(n);
+            }
+        }
+        return order;
+    }
 
     /// <summary>
     /// EXERCISE — fewest edges from <paramref name="from"/> to <paramref name="to"/>, or -1 if unreachable.
