@@ -59,16 +59,19 @@ public sealed class Graph
     }
 
     /// <summary>
-    /// EXERCISE — visit order of a recursive depth-first search from <paramref name="start"/>. O(V + E).
+    /// Visit order of a recursive depth-first search from <paramref name="start"/>. O(V + E).
     /// Visit a vertex, then recurse into each unvisited neighbour in adjacency order.
-    /// Stretch goal: rewrite it with an explicit <see cref="Stack{T}"/> and keep the same order.
-    /// Tests: GraphTests.DepthFirst_*
     /// </summary>
     public IReadOnlyList<int> DepthFirst(int start)
     {
         return DepthFirstWithStack(start);
     }
 
+    /// <summary>
+    /// Recursively search the neighbours of the start node.
+    /// </summary>
+    /// <param name="start">Start index of the search.</param>
+    /// <returns>Order of a depth frist search from start.</returns>
     private IReadOnlyList<int> DepthFirstWithRecursive(int start)
     {
         CheckVertex(start);
@@ -89,6 +92,12 @@ public sealed class Graph
         return order;
     }
 
+    /// <summary>
+    /// Use stack to achieve depth first search.
+    /// </summary>
+    /// <param name="start">Start index of the search.</param>
+    /// <returns>Order of a depth frist search from start. The same result
+    /// using recursive search. </returns>
     private IReadOnlyList<int> DepthFirstWithStack(int start)
     {
         List<int> order = new List<int>();
