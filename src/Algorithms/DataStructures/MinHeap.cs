@@ -1,11 +1,9 @@
 namespace Algorithms.DataStructures;
 
 /// <summary>
-/// EXERCISE — a binary min-heap stored in an array: the smallest item is always at index 0.
-/// Target: Push and Pop O(log n), Peek O(1).
-/// The index helpers are done for you. Push = add at the end, then "sift up";
+/// A binary min-heap stored in an array: the smallest item is always at index 0.
+/// Push = add at the end, then "sift up";
 /// Pop = move the last item to the root, then "sift down" towards the smaller child.
-/// Tests: MinHeapTests
 /// </summary>
 public sealed class MinHeap<T> where T : IComparable<T>
 {
@@ -16,7 +14,14 @@ public sealed class MinHeap<T> where T : IComparable<T>
     public int Count { get; private set; }
 
     public bool IsEmpty => Count == 0;
-
+    
+    /// <summary>
+    /// Append at the end of the heap, and then push up until
+    /// all parents are no greater than children nodes.
+    /// O(logn). Implicitly the heap is a complete binary tree,
+    /// and pushing up compares as many nodes as the height, which
+    /// equals to logn in this case.
+    /// </summary>
     public void Push(T item)
     {
         EnsureCapacity(Count + 1);
@@ -39,7 +44,7 @@ public sealed class MinHeap<T> where T : IComparable<T>
         Count++;
     }
 
-    /// <summary>Remove and return the smallest item. Throw <see cref="InvalidOperationException"/> when empty.</summary>
+    /// <summary>Remove and return the smallest item. Throw <see cref="InvalidOperationException"/> when empty. O(logn)</summary>
     public T Pop()
     {
         ThrowIfEmpty();
@@ -73,7 +78,8 @@ public sealed class MinHeap<T> where T : IComparable<T>
         return ans;
     }
 
-    /// <summary>Return the smallest item without removing it. Throw <see cref="InvalidOperationException"/> when empty.</summary>
+    /// <summary>Return the smallest item without removing it. 
+    /// Throw <see cref="InvalidOperationException"/> when empty. O(1).</summary>
     public T Peek()
     {
         ThrowIfEmpty();
