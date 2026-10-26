@@ -122,7 +122,7 @@ public sealed class Graph
 
     /// <summary>
     /// Fewest edges from <paramref name="from"/> to <paramref name="to"/>, or -1 if unreachable.
-    /// Tests: GraphTests.ShortestPathLength_*
+    /// O(V + E).
     /// </summary>
     public int ShortestPathLength(int from, int to)
     {
