@@ -13,6 +13,11 @@ Read a worked example, then do the exercises that build on it. Each exercise has
 
 That loop — branch, red, green, refactor, PR — is the same one used on professional teams.
 
+## Solutions and code review
+
+- **Reference solutions** live on the [`solutions`](../../tree/solutions) branch, which is never merged. Read [SOLUTIONS.md](../../blob/solutions/SOLUTIONS.md) there for how to use it without spoiling an exercise, plus extra tests worth copying.
+- **Code review:** open your pull request, then ask Claude to review it by number (e.g. "review #29"). The review is posted on the PR as comments on specific lines.
+
 ## Order
 
 | # | Read first | Exercise | Target |
