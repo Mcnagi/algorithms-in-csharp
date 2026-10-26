@@ -48,7 +48,7 @@ public class SinglyLinkedListTests
         Assert.DoesNotContain(7, list);
     }
 
-    [Fact()]
+    [Fact]
     public void Reverse_ReversesOrder()
     {
         var list = ListOf(1, 2, 3, 4);
@@ -57,7 +57,7 @@ public class SinglyLinkedListTests
         Assert.Equal(new[] { 4, 3, 2, 1 }, list);
     }
 
-    [Fact()]
+    [Fact]
     public void Reverse_SwapsFirstAndLast_AndAddLastStillWorks()
     {
         var list = ListOf(1, 2, 3);
@@ -69,7 +69,7 @@ public class SinglyLinkedListTests
         Assert.Equal(new[] { 3, 2, 1, 0 }, list);
     }
 
-    [Fact()]
+    [Fact]
     public void Reverse_EmptyAndSingle_AreUnchanged()
     {
         var empty = ListOf();

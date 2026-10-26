@@ -1,5 +1,7 @@
 # algorithms-in-csharp
 
+> **`solutions` branch — reference answers, never merge into `practice`.** See [SOLUTIONS.md](SOLUTIONS.md).
+
 [![CI](https://github.com/mcnagi/algorithms-in-csharp/actions/workflows/ci.yml/badge.svg)](https://github.com/mcnagi/algorithms-in-csharp/actions/workflows/ci.yml)
 
 Core data structures and algorithms in C# 14 / .NET 10, written from scratch with unit tests.

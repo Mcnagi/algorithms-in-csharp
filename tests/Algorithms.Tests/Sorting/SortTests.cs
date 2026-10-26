@@ -38,7 +38,7 @@ public class SortTests
         AssertSortsLikeArraySort(Sorts.InsertionSort, input);
     }
 
-    [Theory()]
+    [Theory]
     [MemberData(nameof(Cases))]
     public void MergeSort_Sorts(string name, int[] input)
     {
@@ -46,7 +46,7 @@ public class SortTests
         AssertSortsLikeArraySort(Sorts.MergeSort, input);
     }
 
-    [Fact()]
+    [Fact]
     public void MergeSort_IsStable()
     {
         // Equal keys must keep their original relative order.
@@ -57,11 +57,23 @@ public class SortTests
         Assert.Equal("bdac", string.Concat(items.Select(c => c.Tag)));
     }
 
-    [Theory()]
+    [Theory]
     [MemberData(nameof(Cases))]
     public void QuickSort_Sorts(string name, int[] input)
     {
         _ = name;
+        AssertSortsLikeArraySort(Sorts.QuickSort, input);
+    }
+
+    [Fact]
+    public void QuickSort_LargeSortedInput_Sorts()
+    {
+        // With the last item as pivot, sorted input splits n into (n-1, 0) every time:
+        // ~5 billion comparisons and 100,000 nested calls. Measured: ~6.5 s instead of ~6 ms,
+        // and on a thread with a 1 MB stack it overflows and crashes the process (a
+        // StackOverflowException can't be caught). Median-of-three plus "recurse on the
+        // smaller side" fixes both.
+        var input = Enumerable.Range(0, 100_000).ToArray();
         AssertSortsLikeArraySort(Sorts.QuickSort, input);
     }
 

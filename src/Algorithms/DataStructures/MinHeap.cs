@@ -1,111 +1,76 @@
 namespace Algorithms.DataStructures;
 
 /// <summary>
-/// A binary min-heap stored in an array: the smallest item is always at index 0.
-/// Push = add at the end, then "sift up";
-/// Pop = move the last item to the root, then "sift down" towards the smaller child.
+/// REFERENCE SOLUTION — a binary min-heap stored in a list: the smallest item is always at index 0.
+/// Push and Pop are O(log n), Peek is O(1).
 /// </summary>
+/// <remarks>
+/// The heap rule is only "every parent ≤ its children" — siblings are unordered, so a heap
+/// is cheaper to maintain than a sorted list. The tree is implicit: node i's children live at
+/// 2i+1 and 2i+2, so there are no node objects or pointers at all.
+/// </remarks>
 public sealed class MinHeap<T> where T : IComparable<T>
 {
-    private const int DefaultCapacity = 8;
-    private T[] _heap = new T[DefaultCapacity];
+    private readonly List<T> _items = [];
 
-    
-    public int Count { get; private set; }
+    public int Count => _items.Count;
 
     public bool IsEmpty => Count == 0;
-    
-    /// <summary>
-    /// Append at the end of the heap, and then push up until
-    /// all parents are no greater than children nodes.
-    /// O(logn). Implicitly the heap is a complete binary tree,
-    /// and pushing up compares as many nodes as the height, which
-    /// equals to logn in this case.
-    /// </summary>
+
+    /// <summary>Add at the end (keeps the tree complete), then sift up. O(log n).</summary>
     public void Push(T item)
     {
-        EnsureCapacity(Count + 1);
-        _heap[Count] = item;
-        
-        // Push up the inserted item, if any parent.
-        int i = Count;
-        while(true)
-        {
-            int p = Parent(i);
-            if (p < 0) break;
-            if (_heap[p].CompareTo(item) > 0)
-            {
-                Swap(p, i);
-                i = p;
-            }
-            else break;
-        }
-
-        Count++;
+        _items.Add(item);
+        SiftUp(_items.Count - 1);
     }
 
-    /// <summary>Remove and return the smallest item. Throw <see cref="InvalidOperationException"/> when empty. O(logn)</summary>
+    /// <summary>Remove and return the smallest item. O(log n).</summary>
+    /// <exception cref="InvalidOperationException">The heap is empty.</exception>
     public T Pop()
     {
-        ThrowIfEmpty();
-        
-        // Take the last item to the root.
-        T ans = _heap[0];
-        _heap[0] = _heap[--Count];
-        _heap[Count] = default!;
+        var min = Peek();
+        var last = _items.Count - 1;
+        _items[0] = _items[last]; // the last leaf is the only item we can remove in O(1)
+        _items.RemoveAt(last);
+        if (_items.Count > 0) SiftDown(0);
+        return min;
+    }
 
-        // Sift down to satisfy min heap condition.
-        int i = 0;
-        while (i < Count)
+    /// <summary>Return the smallest item without removing it. O(1).</summary>
+    /// <exception cref="InvalidOperationException">The heap is empty.</exception>
+    public T Peek() =>
+        _items.Count > 0 ? _items[0] : throw new InvalidOperationException("Heap is empty.");
+
+    /// <summary>Swap with the parent while smaller than it.</summary>
+    private void SiftUp(int i)
+    {
+        while (i > 0 && Less(i, Parent(i)))
         {
-            int l = Left(i), r = Right(i);
-            int s = l;
-            
-            // Already pushed down to leaf
-            if (l >= Count) break;
-
-            // Compare between the childrens
-            if (r < Count && _heap[l].CompareTo(_heap[r]) > 0) s = r;
-            // Compare parent to the smaller child
-            if (_heap[i].CompareTo(_heap[s]) > 0)
-            {
-                Swap(i, s);
-                i = s;
-            }
-            else break;
-        }
-
-        return ans;
-    }
-
-    /// <summary>Return the smallest item without removing it. 
-    /// Throw <see cref="InvalidOperationException"/> when empty. O(1).</summary>
-    public T Peek()
-    {
-        ThrowIfEmpty();
-        return _heap[0];
-    }
-
-    internal void Swap(int a, int b)
-    {
-        (_heap[b], _heap[a]) = (_heap[a], _heap[b]);
-    }
-
-    internal void EnsureCapacity(int needed)
-    {
-        if (_heap.Length < needed)
-        {
-            T[] newHeap = new T[_heap.Length * 2];
-            Array.Copy(_heap, newHeap, Count);
-            _heap = newHeap;
+            Swap(i, Parent(i));
+            i = Parent(i);
         }
     }
 
-    internal void ThrowIfEmpty()
+    /// <summary>
+    /// Swap with the SMALLER child while larger than it. Swapping with the larger child
+    /// would put that child above its smaller sibling and break the heap rule.
+    /// </summary>
+    private void SiftDown(int i)
     {
-        if (IsEmpty)
-            throw new InvalidOperationException("Heap is empty.");
+        while (true)
+        {
+            int smallest = i, left = Left(i), right = Right(i);
+            if (left < _items.Count && Less(left, smallest)) smallest = left;
+            if (right < _items.Count && Less(right, smallest)) smallest = right;
+            if (smallest == i) return;
+            Swap(i, smallest);
+            i = smallest;
+        }
     }
+
+    private bool Less(int a, int b) => _items[a].CompareTo(_items[b]) < 0;
+
+    private void Swap(int a, int b) => (_items[a], _items[b]) = (_items[b], _items[a]);
 
     internal static int Parent(int i) => (i - 1) / 2;
     internal static int Left(int i) => 2 * i + 1;

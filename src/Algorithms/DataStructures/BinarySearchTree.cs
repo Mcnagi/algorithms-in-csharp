@@ -1,8 +1,8 @@
 namespace Algorithms.DataStructures;
 
 /// <summary>
-/// WORKED EXAMPLE + 2 EXERCISES — an unbalanced binary search tree (no duplicates).
-/// Insert, Contains, Min and InOrder are done; <see cref="Height"/> and <see cref="Remove"/> are yours.
+/// WORKED EXAMPLE + REFERENCE SOLUTIONS — an unbalanced binary search tree (no duplicates).
+/// <see cref="Height"/> and <see cref="Remove"/> are the reference solutions to exercises 5 and 6.
 /// All operations are O(h), where h is the height: O(log n) when balanced, O(n) for sorted input.
 /// </summary>
 public sealed class BinarySearchTree<T> where T : IComparable<T>
@@ -85,73 +85,63 @@ public sealed class BinarySearchTree<T> where T : IComparable<T>
     }
 
     /// <summary>
-    /// Number of nodes on the longest root-to-leaf path. Empty tree = 0, one node = 1.
+    /// REFERENCE SOLUTION — number of nodes on the longest root-to-leaf path.
+    /// Empty tree = 0, one node = 1. O(n): every node is visited once.
     /// </summary>
-    public int Height()
-    {
-        return helper(_root);
-        int helper(Node? node)
-        {
-            if (node is null) return 0;
-            return Math.Max(helper(node.Left) + 1, helper(node.Right) + 1);
-        }
-    }
+    public int Height() => HeightOf(_root);
+
+    // static: it needs no instance state, and the compiler then guarantees it uses none.
+    private static int HeightOf(Node? node) =>
+        node is null ? 0 : 1 + Math.Max(HeightOf(node.Left), HeightOf(node.Right));
 
     /// <summary>
-    /// Remove a value; return false if it wasn't there. O(log(n)).
+    /// REFERENCE SOLUTION — remove a value; return false if it wasn't there.
+    /// O(h), where h is the height: O(log n) when balanced, O(n) for a degenerate tree.
     /// </summary>
+    /// <remarks>
+    /// The recursive helper returns the new root of each subtree, and the caller re-links it
+    /// (<c>node.Left = RemoveFrom(node.Left, ...)</c>). That removes the need to track the
+    /// parent and which side we came from — the most common source of bugs in the iterative version.
+    /// </remarks>
     public bool Remove(T value)
-    {    
-        Node? node = _root;
-        Node? parent = null;
-        // O(log(h)) to find the node.
-        while(node is not null)
-        {
-            int comp = value.CompareTo(node.Value);
-            if (comp == 0) 
-            {
-                RemoveNode();
-                Count--;
-                return true;
-            }
-            parent = node;
-            node = comp < 0 ? node.Left : node.Right;
-        }
-        return false;
+    {
+        var removed = false;
+        _root = RemoveFrom(_root, value, ref removed);
+        if (removed) Count--;
+        return removed;
+    }
 
-        // O(log(nh)) to find replacement node and O(1) to replace.
-        void RemoveNode()
+    private static Node? RemoveFrom(Node? node, T value, ref bool removed)
+    {
+        if (node is null) return null; // not found
+
+        var cmp = value.CompareTo(node.Value);
+        if (cmp < 0)
         {
-            Node? newNode = null;
-            if (node.Left is not null)
-            {
-                if (node.Right is not null)
-                {
-                    newNode = node.Right;
-                    Node? prev = null;
-                    
-                    // Traverse down to the samllest leaf of right child.
-                    // Replace smallest leaf with its left child if any.
-                    // Put smallest leaf in position of current node.
-                    while (newNode.Left is not null) 
-                    {
-                        prev = newNode;
-                        newNode = newNode.Left;
-                    }
-                    if (prev is not null)
-                    {
-                        prev.Left = newNode.Right;
-                    }
-                    newNode.Left = node.Left;
-                    if (newNode != node.Right) newNode.Right = node.Right;
-                }
-                else newNode = node.Left;
-            }
-            else if (node.Right is not null) newNode = node.Right;
-            
-            if (parent is null) _root = newNode;
-            else if (node.Value.CompareTo(parent.Value) < 0) parent.Left = newNode;
-            else parent.Right = newNode;
+            node.Left = RemoveFrom(node.Left, value, ref removed);
+            return node;
         }
+        if (cmp > 0)
+        {
+            node.Right = RemoveFrom(node.Right, value, ref removed);
+            return node;
+        }
+
+        removed = true;
+
+        // Cases 1 and 2: zero or one child — the child (or null) takes this node's place.
+        if (node.Left is null) return node.Right;
+        if (node.Right is null) return node.Left;
+
+        // Case 3: two children. The in-order successor (smallest value in the right subtree)
+        // is larger than everything on the left and smaller than everything else on the right,
+        // so it can take this node's place. Copy its value up, then delete it from the right
+        // subtree — it has no left child, so that delete is always case 1 or 2.
+        var successor = node.Right;
+        while (successor.Left is not null) successor = successor.Left;
+        node.Value = successor.Value;
+        var ignored = false;
+        node.Right = RemoveFrom(node.Right, successor.Value, ref ignored);
+        return node;
     }
 }

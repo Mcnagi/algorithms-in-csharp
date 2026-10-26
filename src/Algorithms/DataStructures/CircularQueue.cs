@@ -1,67 +1,68 @@
 namespace Algorithms.DataStructures;
 
 /// <summary>
-/// EXERCISE — a first-in, first-out queue backed by a circular (ring) buffer.
-/// Target: Enqueue amortised O(1), Dequeue and Peek O(1).
-/// Hint: keep <c>_head</c> (next to dequeue) and <c>Count</c>; the tail slot is
-/// <c>(_head + Count) % _items.Length</c>. When growing, copy items out in queue
-/// order so the new buffer starts at index 0.
-/// Tests: CircularQueueTests
+/// REFERENCE SOLUTION — a first-in, first-out queue backed by a circular (ring) buffer.
+/// Dequeue and Peek are O(1); Enqueue is amortised O(1).
 /// </summary>
+/// <remarks>
+/// Only two numbers describe the queue: <c>_head</c> (the slot to dequeue next) and
+/// <see cref="Count"/>. The tail is derived, never stored, so the two can't disagree.
+/// </remarks>
 public sealed class CircularQueue<T>
 {
-    private const int DefaultCapacity = 8;
-    private const int GrowthFactor = 2;
-    private T[] _q = new T[DefaultCapacity];
-    private int _head = 0;
+    private const int DefaultCapacity = 4;
+    private T[] _items = new T[DefaultCapacity];
+    private int _head;
 
-    ///<summary>Return the number of elements. O(1).</summary>
     public int Count { get; private set; }
 
-    ///<summary>Whether the queue is empty. O(1).</summary>
     public bool IsEmpty => Count == 0;
 
-    /// <summary>Add to the back. Grow the buffer when full. Amortised O(1).</summary>
-    public void Enqueue(T item) 
+    /// <summary>Add to the back. Amortised O(1).</summary>
+    public void Enqueue(T item)
     {
-        EnsureCapacity(Count + 1);
-        int index = (_head + Count) % _q.Length; 
-        _q[index] = item;
+        if (Count == _items.Length) Grow();
+        _items[(_head + Count) % _items.Length] = item;
         Count++;
     }
 
-    /// <summary>Remove and return the front item. Throw <see cref="InvalidOperationException"/> when empty. O(1).</summary>
+    /// <summary>Remove and return the front item. O(1).</summary>
+    /// <exception cref="InvalidOperationException">The queue is empty.</exception>
     public T Dequeue()
     {
         ThrowIfEmpty();
-        T item = _q[_head];
-        _q[_head] = default!;
-        _head = (_head + 1) % _q.Length;
+        var item = _items[_head];
+        _items[_head] = default!;
+        _head = (_head + 1) % _items.Length;
         Count--;
         return item;
     }
 
-    /// <summary>Return the front item without removing it. Throw <see cref="InvalidOperationException"/> when empty. O(1).</summary>
+    /// <summary>Return the front item without removing it. O(1).</summary>
+    /// <exception cref="InvalidOperationException">The queue is empty.</exception>
     public T Peek()
     {
         ThrowIfEmpty();
-        return _q[_head];
+        return _items[_head];
+    }
+
+    /// <summary>
+    /// Copy items out in queue order so the new buffer starts at index 0. A plain
+    /// <see cref="Array.Copy(Array, Array, int)"/> would be wrong once the buffer has wrapped.
+    /// Two block copies (head→end, then start→tail) avoid the per-item modulo.
+    /// </summary>
+    private void Grow()
+    {
+        var bigger = new T[_items.Length * 2];
+        var firstRun = Math.Min(Count, _items.Length - _head);
+        Array.Copy(_items, _head, bigger, 0, firstRun);
+        Array.Copy(_items, 0, bigger, firstRun, Count - firstRun);
+        _items = bigger;
+        _head = 0;
     }
 
     private void ThrowIfEmpty()
     {
-        if (IsEmpty) throw new InvalidOperationException("Queue is empty.");
-    }
-
-    private void EnsureCapacity(int needed)
-    {
-        if (needed <= _q.Length) return;
-        T[] newQ = new T[_q.Length * GrowthFactor];
-        for (int i = 0; i < Count; i++) 
-        {
-            newQ[i] = _q[(_head + i) % _q.Length];
-        }
-        _q = newQ;
-        _head = 0;
+        if (Count == 0) throw new InvalidOperationException("Queue is empty.");
     }
 }

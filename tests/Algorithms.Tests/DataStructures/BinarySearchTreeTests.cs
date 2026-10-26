@@ -49,14 +49,14 @@ public class BinarySearchTreeTests
         Assert.Throws<InvalidOperationException>(() => new BinarySearchTree<int>().Min());
     }
 
-    [Fact()]
+    [Fact]
     public void Height_CountsNodesOnLongestPath()
     {
         Assert.Equal(0, new BinarySearchTree<int>().Height());
         Assert.Equal(4, SampleTree().Height()); // 50 → 30 → 40 → 45
     }
 
-    [Fact()]
+    [Fact]
     public void Height_SortedInsertsDegradeToAList()
     {
         var tree = new BinarySearchTree<int>();
@@ -65,7 +65,7 @@ public class BinarySearchTreeTests
         Assert.Equal(100, tree.Height()); // why balanced trees (AVL, red-black) exist
     }
 
-    [Fact()]
+    [Fact]
     public void Remove_Leaf()
     {
         var tree = SampleTree();
@@ -75,7 +75,7 @@ public class BinarySearchTreeTests
         Assert.Equal(6, tree.Count);
     }
 
-    [Fact()]
+    [Fact]
     public void Remove_NodeWithOneChild()
     {
         var tree = SampleTree();
@@ -84,7 +84,7 @@ public class BinarySearchTreeTests
         Assert.Equal(new[] { 20, 30, 40, 45, 50, 60 }, tree.InOrder());
     }
 
-    [Fact()]
+    [Fact]
     public void Remove_NodeWithTwoChildren()
     {
         var tree = SampleTree();
@@ -94,7 +94,7 @@ public class BinarySearchTreeTests
         Assert.False(tree.Contains(30));
     }
 
-    [Fact()]
+    [Fact]
     public void Remove_Root_AndMissingValue()
     {
         var tree = SampleTree();

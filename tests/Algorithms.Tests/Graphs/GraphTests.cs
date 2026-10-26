@@ -39,20 +39,48 @@ public class GraphTests
     public void AddEdge_UnknownVertex_Throws() =>
         Assert.Throws<ArgumentOutOfRangeException>(() => SampleGraph().AddEdge(0, 6));
 
-    [Fact(Skip = Exercise.Todo)]
+    [Fact]
     public void DepthFirst_GoesDeepBeforeWide()
     {
         // 0 → 1 → 3 (dead end) → back to 1 → 4 → 2
         Assert.Equal(new[] { 0, 1, 3, 4, 2 }, SampleGraph().DepthFirst(0));
     }
 
-    [Fact(Skip = Exercise.Todo)]
+    [Fact]
+    public void DepthFirst_ReachesSharedNeighbourThroughTheDeeperPath()
+    {
+        //   0 — 1
+        //   | \ |      0's neighbours, in order: 1, 4, 2
+        //   4   2
+        // Recursive DFS goes 0 → 1 → 2 (via 1) before backtracking to 4.
+        // An iterative version that marks vertices visited when PUSHED (not popped) skips 2
+        // under 1, because 0 already pushed it, and returns 0, 1, 4, 2 instead.
+        var g = new Graph(5);
+        g.AddEdge(0, 1);
+        g.AddEdge(0, 4);
+        g.AddEdge(0, 2);
+        g.AddEdge(1, 2);
+
+        Assert.Equal(new[] { 0, 1, 2, 4 }, g.DepthFirst(0));
+    }
+
+    [Fact]
+    public void DepthFirst_DeepChain_DoesNotOverflowTheStack()
+    {
+        // 200,000 levels deep: a recursive DFS would need 200,000 stack frames.
+        var g = new Graph(200_000);
+        for (var i = 0; i < 199_999; i++) g.AddEdge(i, i + 1);
+
+        Assert.Equal(200_000, g.DepthFirst(0).Count);
+    }
+
+    [Fact]
     public void DepthFirst_DisconnectedVertex_VisitsOnlyItself()
     {
         Assert.Equal(new[] { 5 }, SampleGraph().DepthFirst(5));
     }
 
-    [Fact(Skip = Exercise.Todo)]
+    [Fact]
     public void DepthFirst_HandlesCyclesAndLongChains()
     {
         var g = new Graph(5_000);
@@ -62,7 +90,7 @@ public class GraphTests
         Assert.Equal(Enumerable.Range(0, 5_000), g.DepthFirst(0));
     }
 
-    [Theory(Skip = Exercise.Todo)]
+    [Theory]
     [InlineData(0, 0, 0)]
     [InlineData(0, 1, 1)]
     [InlineData(0, 3, 2)]

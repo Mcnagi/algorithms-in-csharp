@@ -3,8 +3,8 @@ using System.Collections;
 namespace Algorithms.DataStructures;
 
 /// <summary>
-/// WORKED EXAMPLE + 1 EXERCISE — a singly linked list with head and tail pointers.
-/// Everything is implemented except <see cref="Reverse"/>.
+/// WORKED EXAMPLE + REFERENCE SOLUTION — a singly linked list with head and tail pointers.
+/// <see cref="Reverse"/> is the reference solution to exercise 3.
 /// </summary>
 public sealed class SinglyLinkedList<T> : IEnumerable<T>
 {
@@ -73,27 +73,25 @@ public sealed class SinglyLinkedList<T> : IEnumerable<T>
     }
 
     /// <summary>
-    /// EXERCISE — reverse the list in place. Target: O(n) time, O(1) extra space.
-    /// Hint: walk the list with three references (previous, current, next) and
-    /// flip each <c>Next</c> pointer. Don't forget to swap <c>_head</c> and <c>_tail</c>.
-    /// Tests: SinglyLinkedListTests.Reverse_*
+    /// REFERENCE SOLUTION — reverse the list in place. O(n) time, O(1) extra space.
     /// </summary>
+    /// <remarks>
+    /// Three references walk the list: <c>previous</c> (already reversed), <c>current</c>
+    /// (being flipped) and <c>next</c> (saved before the flip, or the rest of the list is lost).
+    /// No empty-list guard is needed: the loop simply doesn't run, and the swap of two nulls is harmless.
+    /// </remarks>
     public void Reverse()
     {
-        if (_head is not null)
+        Node? previous = null;
+        var current = _head;
+        while (current is not null)
         {
-            Node? prev = null;
-            for (var node = _head; node is not null; )
-            {
-                Node? next = node.Next;
-                node.Next = prev;
-                prev = node;
-                node = next;
-            }
-            Node? newTail = _head;
-            _head = _tail;
-            _tail = newTail;
+            var next = current.Next;
+            current.Next = previous;
+            previous = current;
+            current = next;
         }
+        (_head, _tail) = (_tail, _head); // tuple swap: no temp variable
     }
 
     public IEnumerator<T> GetEnumerator()

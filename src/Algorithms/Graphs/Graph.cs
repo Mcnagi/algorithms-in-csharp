@@ -1,8 +1,8 @@
 namespace Algorithms.Graphs;
 
 /// <summary>
-/// WORKED EXAMPLE + 2 EXERCISES — a graph over vertices 0..n-1 stored as adjacency lists.
-/// Breadth-first search is done; depth-first search and shortest path are yours.
+/// WORKED EXAMPLE + REFERENCE SOLUTIONS — a graph over vertices 0..n-1 stored as adjacency lists.
+/// DepthFirst and ShortestPathLength are the reference solutions to exercises 10 and 11.
 /// Neighbours are visited in the order edges were added, so traversal order is predictable.
 /// </summary>
 public sealed class Graph
@@ -59,20 +59,75 @@ public sealed class Graph
     }
 
     /// <summary>
-    /// EXERCISE — visit order of a recursive depth-first search from <paramref name="start"/>. O(V + E).
-    /// Visit a vertex, then recurse into each unvisited neighbour in adjacency order.
-    /// Stretch goal: rewrite it with an explicit <see cref="Stack{T}"/> and keep the same order.
-    /// Tests: GraphTests.DepthFirst_*
+    /// REFERENCE SOLUTION — visit order of a depth-first search from <paramref name="start"/>. O(V + E).
     /// </summary>
-    public IReadOnlyList<int> DepthFirst(int start) => throw new NotImplementedException("Exercise: see LEARNING.md");
+    /// <remarks>
+    /// Iterative, with an explicit <see cref="Stack{T}"/>, so a 100,000-vertex chain can't overflow the
+    /// call stack (recursion uses one stack frame per level of depth). It produces the same order as
+    /// the recursive version because of two details:
+    /// <list type="number">
+    /// <item>Neighbours are pushed in REVERSE, so the first neighbour is popped first.</item>
+    /// <item>Vertices are marked visited when POPPED, not when pushed. A vertex can sit on the stack
+    /// twice; the second copy is skipped. (BFS marks on enqueue instead — DFS can't, or the order changes.)</item>
+    /// </list>
+    /// </remarks>
+    public IReadOnlyList<int> DepthFirst(int start)
+    {
+        CheckVertex(start);
+        var order = new List<int>();
+        var visited = new bool[VertexCount];
+        var stack = new Stack<int>();
+        stack.Push(start);
+
+        while (stack.Count > 0)
+        {
+            var v = stack.Pop();
+            if (visited[v]) continue;
+            visited[v] = true;
+            order.Add(v);
+
+            var neighbours = _adjacency[v];
+            for (var i = neighbours.Count - 1; i >= 0; i--)
+            {
+                if (!visited[neighbours[i]]) stack.Push(neighbours[i]);
+            }
+        }
+        return order;
+    }
 
     /// <summary>
-    /// EXERCISE — fewest edges from <paramref name="from"/> to <paramref name="to"/>, or -1 if unreachable.
-    /// Hint: BFS already explores in rings of increasing distance; record each vertex's distance
-    /// instead of a bool.
-    /// Tests: GraphTests.ShortestPathLength_*
+    /// REFERENCE SOLUTION — fewest edges from <paramref name="from"/> to <paramref name="to"/>,
+    /// or -1 if unreachable. O(V + E).
     /// </summary>
-    public int ShortestPathLength(int from, int to) => throw new NotImplementedException("Exercise: see LEARNING.md");
+    /// <remarks>
+    /// BFS dequeues vertices in order of distance, so the first time it reaches a vertex is along
+    /// a shortest path. The <c>distance</c> array does double duty: -1 means "not visited yet".
+    /// This only works for unweighted edges; with weights you need Dijkstra (a stretch goal).
+    /// </remarks>
+    public int ShortestPathLength(int from, int to)
+    {
+        CheckVertex(from);
+        CheckVertex(to);
+
+        var distance = new int[VertexCount];
+        Array.Fill(distance, -1);
+        distance[from] = 0;
+        var queue = new Queue<int>();
+        queue.Enqueue(from);
+
+        while (queue.Count > 0)
+        {
+            var v = queue.Dequeue();
+            if (v == to) return distance[v]; // stop early: no need to explore the rest
+            foreach (var n in _adjacency[v])
+            {
+                if (distance[n] != -1) continue;
+                distance[n] = distance[v] + 1;
+                queue.Enqueue(n);
+            }
+        }
+        return -1;
+    }
 
     private void CheckVertex(int v)
     {

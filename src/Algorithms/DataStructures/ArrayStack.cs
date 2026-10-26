@@ -1,44 +1,37 @@
 namespace Algorithms.DataStructures;
 
 /// <summary>
-/// A last-in, first-out stack backed by an array that doubles when full.
-/// Every member is O(1); <see cref="Push"/> is amortised O(1).
+/// REFERENCE SOLUTION — a last-in, first-out stack backed by an array that doubles when full.
+/// Pop and Peek are O(1); Push is amortised O(1).
 /// </summary>
 public sealed class ArrayStack<T>
 {
-    private const int GrowthFactor = 2;
-    private const int DefaultCapacity = 8;
-    private T[] _stack = new T[DefaultCapacity];
-    private int _size = 0;
+    private const int DefaultCapacity = 4;
+    private T[] _items = new T[DefaultCapacity];
 
     /// <summary>Number of items on the stack. O(1).</summary>
-    public int Count => _size;
+    public int Count { get; private set; }
 
     /// <summary>Whether the stack has no items. O(1).</summary>
     public bool IsEmpty => Count == 0;
 
     /// <summary>
-    /// Add <paramref name="item"/> to the top. Amortised O(1): the array doubles
-    /// when full, so each item is copied at most a constant number of times on average.
+    /// Add to the top. Amortised O(1): doubling means n pushes copy fewer than 2n items in total.
     /// </summary>
-    public void Push(T item) 
+    public void Push(T item)
     {
-        if (_size == _stack.Length)
-        {
-            T[] tmp = new T[_stack.Length * GrowthFactor];
-            Array.Copy(_stack, tmp, _size);
-            _stack = tmp;
-        }
-        _stack[_size++] = item;
+        if (Count == _items.Length)
+            Array.Resize(ref _items, _items.Length * 2); // allocates + copies, same as a manual loop
+        _items[Count++] = item;
     }
 
     /// <summary>Remove and return the top item. O(1).</summary>
     /// <exception cref="InvalidOperationException">The stack is empty.</exception>
     public T Pop()
     {
-        if (IsEmpty) ThrowIfEmpty();
-        T item = _stack[--_size];
-        _stack[_size] = default!;
+        ThrowIfEmpty();
+        var item = _items[--Count];
+        _items[Count] = default!; // release the reference so the GC can reclaim it
         return item;
     }
 
@@ -46,13 +39,12 @@ public sealed class ArrayStack<T>
     /// <exception cref="InvalidOperationException">The stack is empty.</exception>
     public T Peek()
     {
-        if (IsEmpty) ThrowIfEmpty();
-        return _stack[_size - 1];
+        ThrowIfEmpty();
+        return _items[Count - 1];
     }
 
     private void ThrowIfEmpty()
     {
-        if (IsEmpty) throw new InvalidOperationException("Stack is empty.");
+        if (Count == 0) throw new InvalidOperationException("Stack is empty.");
     }
-    
 }
