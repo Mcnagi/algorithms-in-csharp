@@ -78,9 +78,9 @@ public static class Sorts
     /// </summary>
     public static void QuickSort<T>(T[] items) where T : IComparable<T>
     {
-        sortLomuto(0, items.Length);
+        SortLomuto(0, items.Length);
         
-        void sortLomuto(int from, int to)
+        void SortLomuto(int from, int to)
         {
             // Do nothing when only one item.
             if (from + 1 >= to) return;
@@ -90,14 +90,14 @@ public static class Sorts
             for (int i = from; i < to - 1; i++)
             {
                 if (items[i].CompareTo(pivot) <= 0)
-                    swap(i, j++);
+                    Swap(i, j++);
             }
-            swap(to - 1, j);
-            sortLomuto(from, j);
-            sortLomuto(j + 1, to);
+            Swap(to - 1, j);
+            SortLomuto(from, j);
+            SortLomuto(j + 1, to);
         }
 
-        void swap(int a, int b)
+        void Swap(int a, int b)
         {
             T itemA = items[a];
             items[a] = items[b];
