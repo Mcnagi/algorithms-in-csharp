@@ -65,8 +65,49 @@ public class SortTests
         AssertSortsLikeArraySort(Sorts.QuickSort, input);
     }
 
+    [Theory]
+    [InlineData("Sorted")]
+    [InlineData("Reversed")]
+    public void QuickSort_SortedOrReversedInput_StaysNearNLogN(string order)
+    {
+        // Choosing the last item as pivot splits sorted (or reversed) input into (n-1, 0)
+        // every time, which costs n²/2 comparisons and n nested calls. Counting comparisons
+        // catches that deterministically, without a slow or stack-overflowing test.
+        const int n = 5_000;
+        var values = Enumerable.Range(0, n);
+        if (order == "Reversed") values = values.Reverse();
+        var counter = new ComparisonCounter();
+        var items = values.Select(v => new Counted(v, counter)).ToArray();
+
+        Sorts.QuickSort(items);
+
+        Assert.Equal(Enumerable.Range(0, n), items.Select(c => c.Value));
+        const long nLogN = 61_440;    // 5,000 × log2(5,000)
+        const long limit = 10 * nLogN; // generous headroom; n²/2 would be 12,500,000
+        Assert.True(counter.Comparisons <= limit,
+            $"{counter.Comparisons:N0} comparisons on {order.ToLowerInvariant()} input; expected about " +
+            $"n·log2(n) = {nLogN:N0} (limit {limit:N0}). Hint: pick a better pivot.");
+    }
+
     private sealed record Card(int Rank, string Tag) : IComparable<Card>
     {
         public int CompareTo(Card? other) => Rank.CompareTo(other?.Rank ?? int.MinValue);
+    }
+
+    private sealed class ComparisonCounter
+    {
+        public long Comparisons;
+    }
+
+    /// <summary>An int that counts every comparison made on it.</summary>
+    private sealed class Counted(int value, ComparisonCounter counter) : IComparable<Counted>
+    {
+        public int Value { get; } = value;
+
+        public int CompareTo(Counted? other)
+        {
+            counter.Comparisons++;
+            return Value.CompareTo(other!.Value);
+        }
     }
 }
