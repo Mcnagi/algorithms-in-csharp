@@ -62,6 +62,48 @@ public class GraphTests
         Assert.Equal(Enumerable.Range(0, 5_000), g.DepthFirst(0));
     }
 
+    [Fact]
+    public void DepthFirst_ReachesSharedNeighbourThroughTheDeeperPath()
+    {
+        //   0 — 1
+        //   | \ |      0's neighbours, in order: 1, 4, 2
+        //   4   2
+        // Recursive DFS goes 0 → 1 → 2 (via 1) before backtracking to 4.
+        // An iterative DFS that marks vertices visited when PUSHED (not popped) skips 2
+        // under 1, because 0 already pushed it, and returns 0, 1, 4, 2 instead.
+        var g = new Graph(5);
+        g.AddEdge(0, 1);
+        g.AddEdge(0, 4);
+        g.AddEdge(0, 2);
+        g.AddEdge(1, 2);
+
+        Assert.Equal(new[] { 0, 1, 2, 4 }, g.DepthFirst(0));
+    }
+
+    [Fact]
+    public void DepthFirst_DeepChain_DoesNotOverflowTheStack()
+    {
+        // 200,000 levels deep: a recursive DFS needs one stack frame per level.
+        var g = new Graph(200_000);
+        for (var i = 0; i < 199_999; i++) g.AddEdge(i, i + 1);
+
+        Assert.Equal(200_000, g.DepthFirst(0).Count);
+    }
+
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(6)]
+    public void DepthFirst_UnknownStart_Throws(int start) =>
+        Assert.Throws<ArgumentOutOfRangeException>(() => SampleGraph().DepthFirst(start));
+
+    [Theory]
+    [InlineData(0, 6)]
+    [InlineData(6, 0)]
+    [InlineData(6, 6)]   // from == to must still be validated, not answered with 0
+    [InlineData(-1, 0)]
+    public void ShortestPathLength_UnknownVertex_Throws(int from, int to) =>
+        Assert.Throws<ArgumentOutOfRangeException>(() => SampleGraph().ShortestPathLength(from, to));
+
     [Theory()]
     [InlineData(0, 0, 0)]
     [InlineData(0, 1, 1)]
