@@ -121,12 +121,31 @@ public sealed class Graph
     }
 
     /// <summary>
-    /// EXERCISE — fewest edges from <paramref name="from"/> to <paramref name="to"/>, or -1 if unreachable.
-    /// Hint: BFS already explores in rings of increasing distance; record each vertex's distance
-    /// instead of a bool.
+    /// Fewest edges from <paramref name="from"/> to <paramref name="to"/>, or -1 if unreachable.
     /// Tests: GraphTests.ShortestPathLength_*
     /// </summary>
-    public int ShortestPathLength(int from, int to) => throw new NotImplementedException("Exercise: see LEARNING.md");
+    public int ShortestPathLength(int from, int to)
+    {
+        if (from == to) return 0;
+        
+        int[] visited = new int[_adjacency.Length];
+        Queue<int> q = new();
+        q.Enqueue(from);
+        visited[from] = 1;
+        while (q.Count > 0)
+        {
+            int i = q.Dequeue();
+            int edges = visited[i] + 1;
+            foreach(int n in _adjacency[i])
+            {
+                if (visited[n] != 0) continue;
+                if (n == to) return visited[i];
+                visited[n] = edges;
+                q.Enqueue(n);
+            }
+        }
+        return -1;
+    }
 
     private void CheckVertex(int v)
     {
