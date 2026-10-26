@@ -59,20 +59,97 @@ public sealed class Graph
     }
 
     /// <summary>
-    /// EXERCISE — visit order of a recursive depth-first search from <paramref name="start"/>. O(V + E).
+    /// Visit order of a recursive depth-first search from <paramref name="start"/>. O(V + E).
     /// Visit a vertex, then recurse into each unvisited neighbour in adjacency order.
-    /// Stretch goal: rewrite it with an explicit <see cref="Stack{T}"/> and keep the same order.
-    /// Tests: GraphTests.DepthFirst_*
     /// </summary>
-    public IReadOnlyList<int> DepthFirst(int start) => throw new NotImplementedException("Exercise: see LEARNING.md");
+    public IReadOnlyList<int> DepthFirst(int start)
+    {
+        return DepthFirstWithStack(start);
+    }
 
     /// <summary>
-    /// EXERCISE — fewest edges from <paramref name="from"/> to <paramref name="to"/>, or -1 if unreachable.
-    /// Hint: BFS already explores in rings of increasing distance; record each vertex's distance
-    /// instead of a bool.
-    /// Tests: GraphTests.ShortestPathLength_*
+    /// Recursively search the neighbours of the start node.
     /// </summary>
-    public int ShortestPathLength(int from, int to) => throw new NotImplementedException("Exercise: see LEARNING.md");
+    /// <param name="start">Start index of the search.</param>
+    /// <returns>Order of a depth frist search from start.</returns>
+    private IReadOnlyList<int> DepthFirstWithRecursive(int start)
+    {
+        CheckVertex(start);
+        var order = new List<int>();
+        var visited = new bool[VertexCount];
+        Visit(start);
+        
+        void Visit(int current)
+        {
+            order.Add(current);
+            visited[current] = true;
+            foreach (var n in _adjacency[current])
+            {
+                if (visited[n]) continue;
+                Visit(n);
+            }
+        }
+        return order;
+    }
+
+    /// <summary>
+    /// Use stack to achieve depth first search.
+    /// </summary>
+    /// <param name="start">Start index of the search.</param>
+    /// <returns>Order of a depth frist search from start. The same result
+    /// using recursive search. </returns>
+    private IReadOnlyList<int> DepthFirstWithStack(int start)
+    {
+        CheckVertex(start);
+        List<int> order = new List<int>();
+        Stack<int> s = new Stack<int>();
+        bool[] visited = new bool[_adjacency.Length];
+        s.Push(start);
+        while(s.Count > 0)
+        {
+            int current = s.Pop();
+            if (visited[current]) continue;
+            visited[current] = true;
+            order.Add(current);
+            for (int i = _adjacency[current].Count - 1; i >= 0; i--)
+            {
+                int n = _adjacency[current][i];
+                CheckVertex(n);
+                if (visited[n]) continue;
+                s.Push(n);
+            }
+        }
+        return order;
+    }
+
+    /// <summary>
+    /// Fewest edges from <paramref name="from"/> to <paramref name="to"/>, or -1 if unreachable.
+    /// O(V + E).
+    /// </summary>
+    public int ShortestPathLength(int from, int to)
+    {
+        CheckVertex(from);
+        CheckVertex(to);
+        if (from == to) return 0;
+        
+        int[] visited = new int[_adjacency.Length];
+        Queue<int> q = new();
+        q.Enqueue(from);
+        visited[from] = 1;
+        while (q.Count > 0)
+        {
+            int i = q.Dequeue();
+            int edges = visited[i] + 1;
+            foreach(int n in _adjacency[i])
+            {
+                if (visited[n] != 0) continue;
+                if (n == to) return visited[i];
+                visited[n] = edges;
+                q.Enqueue(n);
+            }
+        }
+        return -1;
+    }
 
     private void CheckVertex(int v)
     {
