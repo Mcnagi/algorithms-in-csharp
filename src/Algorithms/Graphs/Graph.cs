@@ -104,16 +104,16 @@ public sealed class Graph
         Stack<int> s = new Stack<int>();
         bool[] visited = new bool[_adjacency.Length];
         s.Push(start);
-        visited[start] = true;
         while(s.Count > 0)
         {
             int current = s.Pop();
+            if (visited[current]) continue;
+            visited[current] = true;
             order.Add(current);
             for (int i = _adjacency[current].Count - 1; i >= 0; i--)
             {
                 int n = _adjacency[current][i];
                 if (visited[n]) continue;
-                visited[n] = true;
                 s.Push(n);
             }
         }
