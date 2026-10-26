@@ -78,30 +78,42 @@ public static class Sorts
     /// </summary>
     public static void QuickSort<T>(T[] items) where T : IComparable<T>
     {
-        sortLomuto(0, items.Length);
-        
-        void sortLomuto(int from, int to)
+        Sort(0, items.Length);
+
+        int PickMidieanOfThree(int lo, int hi)
+        {
+
+            int mid = lo + (hi - lo) / 2;
+            if (mid == lo) return lo;
+            int compLoHi = items[lo].CompareTo(items[hi]);
+            int compLoMid = items[lo].CompareTo(items[mid]);
+            int compMidHi = items[mid].CompareTo(items[hi]);
+            return compLoHi < 0 ?
+                (compMidHi < 0 ? mid : hi) :
+                (compLoMid < 0 ? lo : mid);
+        }
+
+        void Sort(int from, int to)
         {
             // Do nothing when only one item.
             if (from + 1 >= to) return;
             
-            T pivot = items[to - 1];
+            int p = PickMidieanOfThree(from, to - 1);
+            Swap(p, to - 1);
             int j = from;
             for (int i = from; i < to - 1; i++)
             {
-                if (items[i].CompareTo(pivot) <= 0)
-                    swap(i, j++);
+                if (items[i].CompareTo(items[to - 1]) <= 0)
+                    Swap(i, j++);
             }
-            swap(to - 1, j);
-            sortLomuto(from, j);
-            sortLomuto(j + 1, to);
+            Swap(to - 1, j);
+            Sort(from, j);
+            Sort(j + 1, to);
         }
 
-        void swap(int a, int b)
+        void Swap(int a, int b)
         {
-            T itemA = items[a];
-            items[a] = items[b];
-            items[b] = itemA;
+            (items[b], items[a]) = (items[a], items[b]);
         }
     }
 }
