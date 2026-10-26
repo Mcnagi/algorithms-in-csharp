@@ -100,6 +100,7 @@ public sealed class Graph
     /// using recursive search. </returns>
     private IReadOnlyList<int> DepthFirstWithStack(int start)
     {
+        CheckVertex(start);
         List<int> order = new List<int>();
         Stack<int> s = new Stack<int>();
         bool[] visited = new bool[_adjacency.Length];
@@ -113,6 +114,7 @@ public sealed class Graph
             for (int i = _adjacency[current].Count - 1; i >= 0; i--)
             {
                 int n = _adjacency[current][i];
+                CheckVertex(n);
                 if (visited[n]) continue;
                 s.Push(n);
             }
@@ -126,6 +128,8 @@ public sealed class Graph
     /// </summary>
     public int ShortestPathLength(int from, int to)
     {
+        CheckVertex(from);
+        CheckVertex(to);
         if (from == to) return 0;
         
         int[] visited = new int[_adjacency.Length];
