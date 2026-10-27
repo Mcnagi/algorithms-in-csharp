@@ -83,7 +83,7 @@ public sealed class SinglyLinkedList<T> : IEnumerable<T>
         if (_head is not null)
         {
             Node? prev = null;
-            for (var node = _head; node is not null; )
+            for (var node = _head; node is not null;)
             {
                 Node? next = node.Next;
                 node.Next = prev;

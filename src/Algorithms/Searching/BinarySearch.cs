@@ -33,11 +33,11 @@ public static class BinarySearch
         int lo = 0, hi = sorted.Count;
         while (lo < hi)
         {
-            int mid = lo + (hi - lo) / 2; 
+            int mid = lo + (hi - lo) / 2;
             var cmp = sorted[mid].CompareTo(target);
             if (cmp < 0) lo = mid + 1;
-            else hi = mid;             
+            else hi = mid;
         }
-       return lo;
+        return lo;
     }
 }

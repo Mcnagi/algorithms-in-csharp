@@ -10,11 +10,10 @@ public sealed class MinHeap<T> where T : IComparable<T>
     private const int DefaultCapacity = 8;
     private T[] _heap = new T[DefaultCapacity];
 
-    
     public int Count { get; private set; }
 
     public bool IsEmpty => Count == 0;
-    
+
     /// <summary>
     /// Append at the end of the heap, and then push up until
     /// all parents are no greater than children nodes.
@@ -26,10 +25,10 @@ public sealed class MinHeap<T> where T : IComparable<T>
     {
         EnsureCapacity(Count + 1);
         _heap[Count] = item;
-        
+
         // Push up the inserted item, if any parent.
         int i = Count;
-        while(true)
+        while (true)
         {
             int p = Parent(i);
             if (p < 0) break;
@@ -48,7 +47,6 @@ public sealed class MinHeap<T> where T : IComparable<T>
     public T Pop()
     {
         ThrowIfEmpty();
-        
         // Take the last item to the root.
         T ans = _heap[0];
         _heap[0] = _heap[--Count];
@@ -60,10 +58,8 @@ public sealed class MinHeap<T> where T : IComparable<T>
         {
             int l = Left(i), r = Right(i);
             int s = l;
-            
             // Already pushed down to leaf
             if (l >= Count) break;
-
             // Compare between the childrens
             if (r < Count && _heap[l].CompareTo(_heap[r]) > 0) s = r;
             // Compare parent to the smaller child

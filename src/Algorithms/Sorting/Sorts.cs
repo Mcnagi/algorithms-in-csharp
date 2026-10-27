@@ -97,7 +97,6 @@ public static class Sorts
         {
             // Do nothing when only one item.
             if (from + 1 >= to) return;
-            
             int p = PickMidieanOfThree(from, to - 1);
             Swap(p, to - 1);
             int j = from;

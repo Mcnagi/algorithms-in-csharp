@@ -89,11 +89,10 @@ public sealed class BinarySearchTree<T> where T : IComparable<T>
     /// </summary>
     public int Height()
     {
-        return helper(_root);
-        int helper(Node? node)
+        return Helper(_root);
+        static int Helper(Node? node)
         {
-            if (node is null) return 0;
-            return Math.Max(helper(node.Left) + 1, helper(node.Right) + 1);
+            return node is null ? 0 : Math.Max(Helper(node.Left) + 1, Helper(node.Right) + 1);
         }
     }
 
@@ -101,14 +100,14 @@ public sealed class BinarySearchTree<T> where T : IComparable<T>
     /// Remove a value; return false if it wasn't there. O(log(n)).
     /// </summary>
     public bool Remove(T value)
-    {    
+    {
         Node? node = _root;
         Node? parent = null;
         // O(log(h)) to find the node.
-        while(node is not null)
+        while (node is not null)
         {
             int comp = value.CompareTo(node.Value);
-            if (comp == 0) 
+            if (comp == 0)
             {
                 RemoveNode();
                 Count--;
@@ -129,11 +128,11 @@ public sealed class BinarySearchTree<T> where T : IComparable<T>
                 {
                     newNode = node.Right;
                     Node? prev = null;
-                    
+
                     // Traverse down to the samllest leaf of right child.
                     // Replace smallest leaf with its left child if any.
                     // Put smallest leaf in position of current node.
-                    while (newNode.Left is not null) 
+                    while (newNode.Left is not null)
                     {
                         prev = newNode;
                         newNode = newNode.Left;
@@ -148,7 +147,7 @@ public sealed class BinarySearchTree<T> where T : IComparable<T>
                 else newNode = node.Left;
             }
             else if (node.Right is not null) newNode = node.Right;
-            
+
             if (parent is null) _root = newNode;
             else if (node.Value.CompareTo(parent.Value) < 0) parent.Left = newNode;
             else parent.Right = newNode;
