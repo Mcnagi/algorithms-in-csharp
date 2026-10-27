@@ -21,7 +21,7 @@ public sealed class ArrayStack<T>
     /// Add <paramref name="item"/> to the top. Amortised O(1): the array doubles
     /// when full, so each item is copied at most a constant number of times on average.
     /// </summary>
-    public void Push(T item) 
+    public void Push(T item)
     {
         if (_size == _stack.Length)
         {
@@ -54,5 +54,4 @@ public sealed class ArrayStack<T>
     {
         if (IsEmpty) throw new InvalidOperationException("Stack is empty.");
     }
-    
 }

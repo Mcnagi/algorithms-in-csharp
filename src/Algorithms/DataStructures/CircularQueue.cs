@@ -22,10 +22,10 @@ public sealed class CircularQueue<T>
     public bool IsEmpty => Count == 0;
 
     /// <summary>Add to the back. Grow the buffer when full. Amortised O(1).</summary>
-    public void Enqueue(T item) 
+    public void Enqueue(T item)
     {
         EnsureCapacity(Count + 1);
-        int index = (_head + Count) % _q.Length; 
+        int index = (_head + Count) % _q.Length;
         _q[index] = item;
         Count++;
     }
@@ -57,7 +57,7 @@ public sealed class CircularQueue<T>
     {
         if (needed <= _q.Length) return;
         T[] newQ = new T[_q.Length * GrowthFactor];
-        for (int i = 0; i < Count; i++) 
+        for (int i = 0; i < Count; i++)
         {
             newQ[i] = _q[(_head + i) % _q.Length];
         }

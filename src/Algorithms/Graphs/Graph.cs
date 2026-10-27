@@ -78,7 +78,7 @@ public sealed class Graph
         var order = new List<int>();
         var visited = new bool[VertexCount];
         Visit(start);
-        
+
         void Visit(int current)
         {
             order.Add(current);
@@ -105,7 +105,7 @@ public sealed class Graph
         Stack<int> s = new Stack<int>();
         bool[] visited = new bool[_adjacency.Length];
         s.Push(start);
-        while(s.Count > 0)
+        while (s.Count > 0)
         {
             int current = s.Pop();
             if (visited[current]) continue;
@@ -131,7 +131,6 @@ public sealed class Graph
         CheckVertex(from);
         CheckVertex(to);
         if (from == to) return 0;
-        
         int[] visited = new int[_adjacency.Length];
         Queue<int> q = new();
         q.Enqueue(from);
@@ -140,7 +139,7 @@ public sealed class Graph
         {
             int i = q.Dequeue();
             int edges = visited[i] + 1;
-            foreach(int n in _adjacency[i])
+            foreach (int n in _adjacency[i])
             {
                 if (visited[n] != 0) continue;
                 if (n == to) return visited[i];
