@@ -130,7 +130,7 @@ public sealed class Graph
     {
         CheckVertex(from);
         CheckVertex(to);
-        if (from == to) return 0;
+        if (from == to) return 0; 
         int[] visited = new int[_adjacency.Length];
         Queue<int> q = new();
         q.Enqueue(from);
