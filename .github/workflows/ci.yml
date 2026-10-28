@@ -12,7 +12,7 @@ jobs:
   format:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-dotnet@v6
         with:
@@ -35,7 +35,7 @@ jobs:
       run:
         shell: bash               # same shell everywhere; in PowerShell $GITHUB_STEP_SUMMARY would be empty
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-dotnet@v4
         with:
