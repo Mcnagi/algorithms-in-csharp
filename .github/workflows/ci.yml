@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 jobs:
-  build-and-test:
+  format:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,7 +19,32 @@ jobs:
           global-json-file: global.json
 
       - name: Restore
-        run: dotnet restore
+        run: dotnet restore --locked-mode
+
+      - name: Check formatting
+        run: dotnet format --verify-no-changes --no-restore
+
+  build-and-test:
+    name: build-and-test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false            # let the other OS finish if one fails, so you see both results
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    defaults:
+      run:
+        shell: bash               # same shell everywhere; in PowerShell $GITHUB_STEP_SUMMARY would be empty
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: '**/packages.lock.json'
+
+      - name: Restore
+        run: dotnet restore --locked-mode   # fails if a lock file is out of date
 
       - name: Build
         run: dotnet build --configuration Release --no-restore
@@ -32,11 +57,11 @@ jobs:
           --results-directory ./TestResults
 
       - name: Restore tools
-        if: always()
+        if: always() && runner.os == 'Linux'
         run: dotnet tool restore
 
       - name: Generate coverage report
-        if: always()
+        if: always() && runner.os == 'Linux'
         run: >
           dotnet reportgenerator
           -reports:"TestResults/**/coverage.cobertura.xml"
@@ -44,5 +69,5 @@ jobs:
           -reporttypes:"MarkdownSummaryGithub"
 
       - name: Add coverage to job summary
-        if: always()
+        if: always() && runner.os == 'Linux'
         run: cat coverage/SummaryGithub.md >> "$GITHUB_STEP_SUMMARY"
