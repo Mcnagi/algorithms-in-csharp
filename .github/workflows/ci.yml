@@ -46,11 +46,27 @@ jobs:
       - name: Restore
         run: dotnet restore --locked-mode   # fails if a lock file is out of date
 
-      # Build, Test, Restore tools: unchanged
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test
+        run: >
+          dotnet test --configuration Release --no-build
+          --logger "console;verbosity=normal"
+          --collect:"XPlat Code Coverage"
+          --results-directory ./TestResults
+
+      - name: Restore tools
+        if: always() && runner.os == 'Linux'
+        run: dotnet tool restore
 
       - name: Generate coverage report
         if: always() && runner.os == 'Linux'
-        # ...unchanged
+        run: >
+          dotnet reportgenerator
+          -reports:"TestResults/**/coverage.cobertura.xml"
+          -targetdir:coverage
+          -reporttypes:"MarkdownSummaryGithub"
 
       - name: Add coverage to job summary
         if: always() && runner.os == 'Linux'
