@@ -19,7 +19,7 @@ jobs:
           global-json-file: global.json
 
       - name: Restore
-        run: dotnet restore
+        run: dotnet restore --locked-mode
 
       - name: Check formatting
         run: dotnet format --verify-no-changes --no-restore
