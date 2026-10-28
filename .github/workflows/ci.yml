@@ -33,7 +33,7 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     defaults:
       run:
-        shell: bash               # Windows defaults to PowerShell; see the gotcha below
+        shell: bash               # same shell everywhere; in PowerShell $GITHUB_STEP_SUMMARY would be empty
     steps:
       - uses: actions/checkout@v4
 
